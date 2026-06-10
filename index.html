@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b3d2e">
+<title>World Cup 2026 Bracket Pool</title>
+<style>
+  :root{
+    --green:#0b3d2e; --green2:#0f4a38; --pitch:#0e5a3f; --gold:#e8b53d; --gold-d:#9a7414;
+    --info:#1f6feb; --info-bg:#e7f0fe; --ok:#1a8f4c; --ok-bg:#e3f6ec; --warn:#a9701a; --warn-bg:#fdf3e0;
+    --ink:#10221b; --ink2:#4a5d55; --ink3:#849790; --line:#e3e9e6; --line2:#cfd8d3;
+    --bg:#f4f7f5; --card:#ffffff; --red:#c0392b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.45;
+    font-size:16px; -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  /* Header */
+  header{
+    background:linear-gradient(155deg,var(--green) 0%,var(--pitch) 100%);
+    color:#fff; padding:calc(env(safe-area-inset-top) + 18px) 18px 16px;
+    position:relative; overflow:hidden;
+  }
+  header::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;border:2px solid rgba(255,255,255,.08);}
+  header::before{content:"";position:absolute;left:50%;top:-60px;width:120px;height:120px;border-radius:50%;border:2px solid rgba(255,255,255,.07);}
+  h1{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:1.32rem;font-weight:800;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;}
+  .sub{margin:4px 0 0;font-size:.8rem;opacity:.85;font-weight:500;}
+  .ball{font-size:1.2rem;}
+  /* Tabs */
+  nav{display:flex;background:var(--green);position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.18);}
+  nav button{
+    flex:1;border:0;background:transparent;color:rgba(255,255,255,.62);
+    padding:12px 4px 11px;font-size:.7rem;font-weight:600;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:3px solid transparent;
+    font-family:inherit;
+  }
+  nav button .ic{font-size:1.15rem;line-height:1;}
+  nav button.on{color:#fff;border-bottom-color:var(--gold);}
+  /* Content */
+  main{padding:16px 14px 40px;}
+  .muted{color:var(--ink2);font-size:.85rem;}
+  .tiny{color:var(--ink3);font-size:.76rem;}
+  /* Name input */
+  .namebox{display:flex;gap:8px;margin-bottom:14px;}
+  input[type=text]{
+    flex:1;font-size:1rem;padding:13px 14px;border:1.5px solid var(--line2);border-radius:13px;
+    background:var(--card);color:var(--ink);font-family:inherit;min-width:0;
+  }
+  input[type=text]:focus{outline:none;border-color:var(--info);}
+  /* Progress */
+  .pwrap{margin-bottom:16px;}
+  .phead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .ptrack{height:9px;background:#e1e8e4;border-radius:99px;overflow:hidden;}
+  .pfill{height:100%;background:linear-gradient(90deg,var(--ok),#27c06a);border-radius:99px;transition:width .35s ease;}
+  /* Step pills */
+  .steps{display:flex;gap:6px;margin-bottom:18px;}
+  .steps button{
+    flex:1;border:1.5px solid var(--line2);background:var(--card);color:var(--ink2);
+    padding:9px 4px;border-radius:11px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;justify-content:center;gap:4px;
+  }
+  .steps button.on{background:var(--green);color:#fff;border-color:var(--green);}
+  .steps button.done:not(.on){border-color:var(--ok);color:var(--ok);}
+  .chk{font-weight:900;}
+  /* Section heading */
+  .shead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:0 0 3px;}
+  .shead h2{font-size:1.06rem;margin:0;font-weight:800;letter-spacing:-.01em;}
+  .badge{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:8px;white-space:nowrap;}
+  .badge.info{color:var(--info);background:var(--info-bg);}
+  .badge.gold{color:var(--gold-d);background:#fbf0d2;}
+  .hint{font-size:.82rem;color:var(--ink2);margin:0 0 13px;}
+  /* Group grid */
+  .ggrid{display:grid;grid-template-columns:1fr;gap:11px;}
+  @media(min-width:560px){.ggrid{grid-template-columns:1fr 1fr;}}
+  .gcard{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 13px;box-shadow:0 1px 3px rgba(11,61,46,.04);}
+  .glabel{font-size:.7rem;font-weight:800;color:var(--ink3);letter-spacing:.08em;margin-bottom:9px;}
+  .teamcol{display:flex;flex-direction:column;gap:7px;}
+  /* Team chip — big tap target */
+  .chip{
+    display:flex;align-items:center;gap:9px;padding:12px 13px;border-radius:12px;
+    border:1.5px solid var(--line2);background:var(--card);color:var(--ink);
+    font-size:.95rem;cursor:pointer;user-select:none;font-weight:600;
+    min-height:48px;transition:background .12s,border-color .12s,transform .05s;
+  }
+  .chip:active{transform:scale(.98);}
+  .chip .fl{font-size:1.35rem;line-height:1;flex:none;width:26px;text-align:center;}
+  .chip .nm{flex:1;}
+  .chip .tag{font-size:.66rem;font-weight:800;letter-spacing:.03em;padding:2px 7px;border-radius:6px;background:rgba(0,0,0,.07);}
+  .chip.s1{background:var(--gold);border-color:var(--gold);color:#3a2705;}
+  .chip.s1 .tag{background:rgba(0,0,0,.16);}
+  .chip.s2{background:var(--info);border-color:var(--info);color:#fff;}
+  .chip.s2 .tag{background:rgba(255,255,255,.25);}
+  .chip.sel{background:var(--info);border-color:var(--info);color:#fff;}
+  .chip.dim{opacity:.38;}
+  .chip.strike .nm{text-decoration:line-through;opacity:.7;}
+  .chip.lock{cursor:default;}
+  .chip.lock:active{transform:none;}
+  /* third place pills inline */
+  .pillrow{display:flex;flex-wrap:wrap;gap:7px;}
+  .pill{display:inline-flex;align-items:center;gap:7px;padding:9px 11px;border-radius:11px;border:1.5px solid var(--line2);background:var(--card);font-weight:600;font-size:.9rem;cursor:pointer;user-select:none;min-height:42px;}
+  .pill .fl{font-size:1.2rem;}
+  .pill.sel{background:var(--info);border-color:var(--info);color:#fff;}
+  .pill.dim{opacity:.4;}
+  .pill.lock{cursor:default;}
+  /* Matches */
+  .round{margin-bottom:20px;}
+  .rhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;}
+  .rhead h3{margin:0;font-size:1rem;font-weight:800;}
+  .mgrid{display:grid;grid-template-columns:1fr;gap:9px;}
+  @media(min-width:560px){.mgrid{grid-template-columns:1fr 1fr;}}
+  .match{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:5px;box-shadow:0 1px 3px rgba(11,61,46,.04);}
+  .mrow{display:flex;align-items:center;gap:9px;padding:12px 12px;border-radius:10px;cursor:pointer;font-size:.95rem;font-weight:600;min-height:48px;transition:background .1s;}
+  .mrow:active{background:var(--bg);}
+  .mrow .fl{font-size:1.3rem;width:26px;text-align:center;flex:none;}
+  .mrow .nm{flex:1;}
+  .mrow.win{background:var(--ok-bg);font-weight:800;color:var(--ink);}
+  .mrow.win .wtick{color:var(--ok);font-weight:900;font-size:1.1rem;}
+  .mrow.pend{cursor:default;color:var(--ink3);font-style:italic;font-weight:500;}
+  .mrow.pend:active{background:transparent;}
+  .mrow.fade{opacity:.4;cursor:default;}
+  .mrow.fade:active{background:transparent;}
+  .mrow.lock{cursor:default;}
+  .mrow.lock:active{background:transparent;}
+  .mrow.lock.win:active{background:var(--ok-bg);}
+  .champ{margin-top:11px;text-align:center;padding:18px 14px;border-radius:16px;border:2px dashed var(--line2);}
+  .champ.set{background:linear-gradient(155deg,#fbf0d2,#f6e3a8);border:2px solid var(--gold);}
+  .champ .lbl{font-size:.7rem;letter-spacing:.12em;color:var(--ink3);font-weight:800;margin-bottom:5px;}
+  .champ .who{font-size:1.4rem;font-weight:900;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--ink3);}
+  .champ.set .who{color:var(--gold-d);}
+  /* Buttons */
+  .navbtns{display:flex;gap:10px;margin-top:22px;align-items:center;}
+  .btn{border:1.5px solid var(--line2);background:var(--card);color:var(--ink);padding:13px 18px;border-radius:13px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px;min-height:50px;}
+  .btn:active{transform:scale(.98);}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green);}
+  .btn.go{background:var(--ok);color:#fff;border-color:var(--ok);flex:1;justify-content:center;font-size:1rem;}
+  .btn.ghost{background:transparent;}
+  .spacer{flex:1;}
+  /* Banners */
+  .banner{border-radius:13px;padding:13px 15px;margin-bottom:16px;font-size:.86rem;display:flex;gap:10px;align-items:flex-start;font-weight:500;}
+  .banner .bi{font-size:1.2rem;line-height:1;flex:none;}
+  .banner.info{background:var(--info-bg);color:#13478f;}
+  .banner.warn{background:var(--warn-bg);color:#7a4d0a;}
+  .banner.ok{background:var(--ok-bg);color:#0c5e30;}
+  .lockcard{background:var(--ok-bg);border-radius:16px;padding:16px;margin-bottom:18px;display:flex;gap:12px;align-items:center;}
+  .lockcard .bi{font-size:1.7rem;}
+  .lockcard .t{flex:1;}
+  .lockcard .t b{display:block;color:#0c5e30;font-size:.98rem;}
+  .lockcard .t span{font-size:.82rem;color:#0c5e30;}
+  /* Leaderboard */
+  .lbrow{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 15px;margin-bottom:9px;box-shadow:0 1px 3px rgba(11,61,46,.04);}
+  .lbtop{display:flex;align-items:center;gap:12px;}
+  .rank{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;background:var(--bg);color:var(--ink2);flex:none;}
+  .rank.g{background:#fbf0d2;color:#8a6912;}
+  .rank.s{background:#eceeef;color:#717c84;}
+  .rank.b{background:#f6e0d2;color:#9c5a32;}
+  .lbname{flex:1;font-weight:700;font-size:.98rem;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .lbname .cp{font-size:.78rem;color:var(--ink2);font-weight:600;display:inline-flex;align-items:center;gap:4px;}
+  .lbpts{font-weight:800;font-size:1.15rem;}
+  .lbpts span{font-size:.72rem;color:var(--ink2);font-weight:600;}
+  .lbtrack{height:6px;background:#e1e8e4;border-radius:99px;overflow:hidden;margin-top:9px;}
+  .lbfill{height:100%;background:var(--info);border-radius:99px;transition:width .4s;}
+  .winner-banner{background:linear-gradient(155deg,#fbf0d2,#f6e3a8);border-radius:16px;padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;gap:13px;}
+  .winner-banner .bi{font-size:2rem;}
+  .winner-banner .t b{display:block;color:var(--gold-d);font-size:1.25rem;font-weight:900;}
+  .winner-banner .t span{font-size:.78rem;color:var(--gold-d);font-weight:700;}
+  /* table */
+  .scoretable{width:100%;border-collapse:collapse;font-size:.92rem;}
+  .scoretable th{text-align:left;font-size:.72rem;color:var(--ink3);font-weight:700;padding-bottom:7px;}
+  .scoretable th.r,.scoretable td.r{text-align:right;}
+  .scoretable td{padding:9px 0;border-bottom:1px solid var(--line);}
+  .scoretable tr:last-child td{border-bottom:0;font-weight:800;padding-top:11px;}
+  .empty{text-align:center;padding:40px 18px;background:var(--card);border-radius:16px;border:1px solid var(--line);}
+  .empty .bi{font-size:2.2rem;}
+  .empty b{display:block;margin:10px 0 3px;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:.88rem;font-weight:600;z-index:200;box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:90%;text-align:center;}
+  .orgtools{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
+  /* Modal (replaces native confirm/alert which Safari blocks in iframes) */
+  .modal-bg{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(8,20,15,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:22px;}
+  .modal{background:var(--card);border-radius:18px;max-width:380px;width:100%;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.35);}
+  .modal h4{margin:0 0 8px;font-size:1.1rem;font-weight:800;}
+  .modal p{margin:0 0 16px;font-size:.9rem;color:var(--ink2);line-height:1.45;}
+  .modal .mbtns{display:flex;gap:10px;}
+  .modal .mbtns .btn{flex:1;justify-content:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="ball">⚽</span> World Cup 2026 Pool</h1>
+    <p class="sub">48 teams · 12 groups · USA · Canada · Mexico <span style="opacity:.65;">· v4</span></p>
+  </header>
+  <nav id="nav">
+    <button data-tab="bracket" class="on"><span class="ic">📝</span>Fill Out</button>
+    <button data-tab="share"><span class="ic">📤</span>Share</button>
+    <button data-tab="board"><span class="ic">🏅</span>Board</button>
+    <button data-tab="results"><span class="ic">✅</span>Results</button>
+    <button data-tab="scoring"><span class="ic">ℹ️</span>Scoring</button>
+  </nav>
+  <main id="view"></main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- VERIFIED DATA (checked against official FIFA bracket) ----------
+  var GROUPS = {
+    A:["Mexico","South Africa","South Korea","Czechia"],
+    B:["Canada","Bosnia and Herzegovina","Qatar","Switzerland"],
+    C:["Brazil","Morocco","Haiti","Scotland"],
+    D:["United States","Paraguay","Australia","Türkiye"],
+    E:["Germany","Curaçao","Ivory Coast","Ecuador"],
+    F:["Netherlands","Japan","Sweden","Tunisia"],
+    G:["Belgium","Egypt","Iran","New Zealand"],
+    H:["Spain","Cape Verde","Saudi Arabia","Uruguay"],
+    I:["France","Senegal","Iraq","Norway"],
+    J:["Argentina","Algeria","Austria","Jordan"],
+    K:["Portugal","DR Congo","Uzbekistan","Colombia"],
+    L:["England","Croatia","Ghana","Panama"]
+  };
+  var GK = Object.keys(GROUPS);
+  var TEAM2G = {}; GK.forEach(function(g){ GROUPS[g].forEach(function(t){ TEAM2G[t]=g; }); });
+  var FLAG = {Mexico:"🇲🇽","South Africa":"🇿🇦","South Korea":"🇰🇷",Czechia:"🇨🇿",Canada:"🇨🇦","Bosnia and Herzegovina":"🇧🇦",Qatar:"🇶🇦",Switzerland:"🇨🇭",Brazil:"🇧🇷",Morocco:"🇲🇦",Haiti:"🇭🇹",Scotland:"🏴󠁧󠁢󠁳󠁣󠁴󠁿","United States":"🇺🇸",Paraguay:"🇵🇾",Australia:"🇦🇺","Türkiye":"🇹🇷",Germany:"🇩🇪","Curaçao":"🇨🇼","Ivory Coast":"🇨🇮",Ecuador:"🇪🇨",Netherlands:"🇳🇱",Japan:"🇯🇵",Sweden:"🇸🇪",Tunisia:"🇹🇳",Belgium:"🇧🇪",Egypt:"🇪🇬",Iran:"🇮🇷","New Zealand":"🇳🇿",Spain:"🇪🇸","Cape Verde":"🇨🇻","Saudi Arabia":"🇸🇦",Uruguay:"🇺🇾",France:"🇫🇷",Senegal:"🇸🇳",Iraq:"🇮🇶",Norway:"🇳🇴",Argentina:"🇦🇷",Algeria:"🇩🇿",Austria:"🇦🇹",Jordan:"🇯🇴",Portugal:"🇵🇹","DR Congo":"🇨🇩",Uzbekistan:"🇺🇿",Colombia:"🇨🇴",England:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",Croatia:"🇭🇷",Ghana:"🇬🇭",Panama:"🇵🇦"};
+
+  // Round of 32 feed, in official bracket-linear order (adjacent pairs feed R16 correctly).
+  // p:1=group winner, p:2=runner-up. t=eligible groups for a best-third-place team, s=slot id.
+  var FEED = [
+    {a:{p:2,g:"A"},b:{p:2,g:"B"}},                       // M73
+    {a:{p:1,g:"F"},b:{p:2,g:"C"}},                       // M75
+    {a:{p:1,g:"E"},b:{t:["A","B","C","D","F"],s:0}},     // M74
+    {a:{p:1,g:"I"},b:{t:["C","D","F","G","H"],s:1}},     // M77
+    {a:{p:2,g:"K"},b:{p:2,g:"L"}},                       // M83
+    {a:{p:1,g:"H"},b:{p:2,g:"J"}},                       // M84
+    {a:{p:1,g:"D"},b:{t:["B","E","F","I","J"],s:2}},     // M81
+    {a:{p:1,g:"G"},b:{t:["A","E","H","I","J"],s:3}},     // M82
+    {a:{p:1,g:"C"},b:{p:2,g:"F"}},                       // M76
+    {a:{p:2,g:"E"},b:{p:2,g:"I"}},                       // M78
+    {a:{p:1,g:"A"},b:{t:["C","E","F","H","I"],s:4}},     // M79
+    {a:{p:1,g:"L"},b:{t:["E","H","I","J","K"],s:5}},     // M80
+    {a:{p:1,g:"J"},b:{p:2,g:"H"}},                       // M86
+    {a:{p:2,g:"D"},b:{p:2,g:"G"}},                       // M88
+    {a:{p:1,g:"B"},b:{t:["E","F","G","I","J"],s:6}},     // M85
+    {a:{p:1,g:"K"},b:{t:["D","E","I","J","L"],s:7}}      // M87
+  ];
+  var SLOT_GROUPS = {}; FEED.forEach(function(f){ if(f.b.t) SLOT_GROUPS[f.b.s]=f.b.t; });
+
+  var KO = [
+    {key:"r32",label:"Round of 32",n:16},
+    {key:"r16",label:"Round of 16",n:8},
+    {key:"qf",label:"Quarter-finals",n:4},
+    {key:"sf",label:"Semi-finals",n:2},
+    {key:"final",label:"Final",n:1}
+  ];
+
+  // ---------- STATE ----------
+  var entries = [], official = blankBracket(), tab = "bracket", mstep = 0, ostep = 0;
+  var draft = makeDraft();
+  var justSubmitted = false, storageOK = true, hasStorage = (typeof window.storage !== "undefined" && window.storage);
+
+  function blankBracket(){ return {g1:fill12(), g2:fill12(), third:[], win:{r32:{},r16:{},qf:{},sf:{},final:{}}}; }
+  function makeDraft(){ var b=blankBracket(); b.name=""; b.id=null; b.locked=false; return b; }
+  function fill12(){ var a=[]; for(var i=0;i<12;i++) a.push(""); return a; }
+  function flag(t){ return t ? '<span class="fl">'+(FLAG[t]||"🏳️")+'</span>' : ''; }
+  function esc(s){ return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+  function uid(){ return "e"+Date.now()+Math.floor(Math.random()*99999); }
+
+  // ---------- BRACKET CODE (export/import; no server needed) ----------
+  var TEAMS = []; GK.forEach(function(g){ GROUPS[g].forEach(function(t){ TEAMS.push(t); }); });
+  var TIDX = {}; TEAMS.forEach(function(t,i){ TIDX[t]=i; });
+  var AL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"; // 64 chars, 48 teams fit
+  function encTeam(t){ return t ? AL[TIDX[t]] : "."; }
+  function decTeam(ch){ return ch==="." ? "" : (TEAMS[AL.indexOf(ch)]||""); }
+  function encBody(b){
+    var s="", i;
+    for(i=0;i<12;i++) s+=encTeam(b.g1[i]);
+    for(i=0;i<12;i++) s+=encTeam(b.g2[i]);
+    var th=(b.third||[]).filter(Boolean); for(i=0;i<8;i++) s+=encTeam(th[i]||"");
+    [["r32",16],["r16",8],["qf",4],["sf",2],["final",1]].forEach(function(rk){
+      for(var j=0;j<rk[1];j++) s+=encTeam(b.win[rk[0]][j]||"");
+    });
+    return s; // exactly 63 chars
+  }
+  function decBody(s){
+    var b=blankBracket(), p=0, i;
+    for(i=0;i<12;i++) b.g1[i]=decTeam(s[p++]);
+    for(i=0;i<12;i++) b.g2[i]=decTeam(s[p++]);
+    for(i=0;i<8;i++){ var t=decTeam(s[p++]); if(t) b.third.push(t); }
+    [["r32",16],["r16",8],["qf",4],["sf",2],["final",1]].forEach(function(rk){
+      for(var j=0;j<rk[1];j++){ var t=decTeam(s[p++]); if(t) b.win[rk[0]][j]=t; }
+    });
+    return b;
+  }
+  function checksum(s){ var h=0; for(var i=0;i<s.length;i++) h=(h*31 + s.charCodeAt(i))>>>0; return h.toString(36).slice(-4); }
+  function makeCode(name, b){
+    var nm=(name||"").trim();
+    var core=nm.length.toString(36).padStart(2,"0")+nm+encBody(b);
+    return "WC26-"+core+"-"+checksum(core);
+  }
+  function readCode(code){
+    code=(code||"").trim();
+    if(code.indexOf("WC26-")!==0) return {err:"That's not a World Cup bracket code."};
+    var rest=code.slice(5), dash=rest.lastIndexOf("-");
+    if(dash<0) return {err:"Code looks incomplete."};
+    var core=rest.slice(0,dash), cs=rest.slice(dash+1);
+    if(checksum(core)!==cs) return {err:"Code looks corrupted — ask them to re-copy the whole thing."};
+    var nlen=parseInt(core.slice(0,2),36);
+    if(isNaN(nlen)) return {err:"Code looks corrupted."};
+    var nm=core.slice(2,2+nlen), body=core.slice(2+nlen);
+    if(body.length!==63) return {err:"Code is the wrong length — copy the entire code."};
+    return {name:nm, bracket:decBody(body)};
+  }
+  function importCode(code){
+    var r=readCode(code);
+    if(r.err) return r;
+    if((r.name||"").trim().toUpperCase()==="RESULTS"){
+      official = Object.assign(blankBracket(), r.bracket);
+      saveLocal(); saveOfficial();
+      return {results:true};
+    }
+    var e={id:uid(), name:r.name, g1:r.bracket.g1, g2:r.bracket.g2, third:r.bracket.third, win:r.bracket.win, ts:Date.now(), locked:true, imported:true};
+    // de-dupe by identical name+body
+    var dup=entries.findIndex(function(x){ return ((x.name||"")===(e.name||"")) && encBody(safeB(x))===encBody(safeB(e)); });
+    if(dup>=0) return {dupe:true, name:e.name};
+    entries.push(e);
+    saveLocal();
+    if(hasStorage){ try{ window.storage.set("wc26final:"+e.id, JSON.stringify(e), true); }catch(_){} }
+    return {name:e.name};
+  }
+
+  // ---------- BRACKET LOGIC ----------
+  // Assign chosen third-place teams to slots via bipartite matching (always finds full assignment if one exists).
+  function thirdsMap(t){
+    var teams = (t.third||[]).filter(Boolean);
+    var matchSlot = {};
+    function tryAssign(ti, seen){
+      for(var s=0;s<8;s++){
+        if(SLOT_GROUPS[s].indexOf(TEAM2G[teams[ti]])<0) continue;
+        if(seen[s]) continue;
+        seen[s]=true;
+        if(matchSlot[s]===undefined || tryAssign(matchSlot[s], seen)){ matchSlot[s]=ti; return true; }
+      }
+      return false;
+    }
+    for(var ti=0; ti<teams.length; ti++) tryAssign(ti, {});
+    var out={}; Object.keys(matchSlot).forEach(function(s){ out[s]=teams[matchSlot[s]]; });
+    return out;
+  }
+  function thirdsPlaced(t){ return Object.keys(thirdsMap(t)).length; }
+  function resolveSlot(slot, t, tm){
+    if(slot.p){ var arr = slot.p===1 ? t.g1 : t.g2; return arr[GK.indexOf(slot.g)]||""; }
+    return tm[slot.s]||"";
+  }
+  function slotLabel(slot){ return slot.p ? (slot.g+(slot.p===1?" winner":" runner-up")) : ("3rd: "+slot.t.join("/")); }
+  function matchesFor(round, t, tm){
+    if(round==="r32") return FEED.map(function(f){ return {a:resolveSlot(f.a,t,tm), b:resolveSlot(f.b,t,tm), aL:slotLabel(f.a), bL:slotLabel(f.b)}; });
+    var prev = KO[findKO(round)-1];
+    var n = KO[findKO(round)].n, out=[];
+    for(var i=0;i<n;i++) out.push({a:t.win[prev.key][2*i]||"", b:t.win[prev.key][2*i+1]||"", aL:"", bL:""});
+    return out;
+  }
+  function findKO(key){ for(var i=0;i<KO.length;i++) if(KO[i].key===key) return i; return -1; }
+  function cleanup(t){
+    var tm = thirdsMap(t);
+    // First re-validate R32 itself: a changed group/third pick can make a stored R32 winner
+    // a team that's no longer in that match. Drop any such stale winner.
+    var r32 = matchesFor("r32", t, tm);
+    Object.keys(t.win.r32).forEach(function(i){
+      var m = r32[+i];
+      if(!m || !m.a || !m.b || (t.win.r32[i]!==m.a && t.win.r32[i]!==m.b)) delete t.win.r32[i];
+    });
+    // Then cascade through the later rounds (each depends on the previous round's winners).
+    ["r16","qf","sf","final"].forEach(function(rk){
+      var ms = matchesFor(rk,t,tm);
+      Object.keys(t.win[rk]).forEach(function(i){
+        var m = ms[+i];
+        if(!m || !m.a || !m.b || (t.win[rk][i]!==m.a && t.win[rk][i]!==m.b)) delete t.win[rk][i];
+      });
+    });
+  }
+  // Normalize any entry/bracket to a complete shape so one bad/legacy/partial
+  // entry can never throw and crash the whole leaderboard.
+  function safeB(t){
+    t = t || {};
+    var w = t.win || {};
+    return {
+      name: t.name,
+      g1: Array.isArray(t.g1) ? t.g1 : [],
+      g2: Array.isArray(t.g2) ? t.g2 : [],
+      third: Array.isArray(t.third) ? t.third : [],
+      win: {
+        r32: w.r32 || {}, r16: w.r16 || {}, qf: w.qf || {}, sf: w.sf || {}, final: w.final || {}
+      },
+      ts: t.ts, id: t.id, locked: t.locked, imported: t.imported
+    };
+  }
+  function reached(t){
+    t = safeB(t);
+    return {
+      r16:new Set(Object.values(t.win.r32)),
+      qf:new Set(Object.values(t.win.r16)),
+      sf:new Set(Object.values(t.win.qf)),
+      fin:new Set(Object.values(t.win.sf)),
+      champ:(t.win.final && t.win.final[0]) || ""
+    };
+  }
+  function score(t){
+    t = safeB(t);
+    var o = safeB(official);
+    var p=0, i;
+    for(i=0;i<12;i++){ if(t.g1[i] && t.g1[i]===o.g1[i]) p+=3; if(t.g2[i] && t.g2[i]===o.g2[i]) p+=2; }
+    var ot=new Set(o.third); t.third.forEach(function(x){ if(x && ot.has(x)) p+=1; });
+    var me=reached(t), of=reached(o);
+    me.r16.forEach(function(x){ if(of.r16.has(x)) p+=2; });
+    me.qf.forEach(function(x){ if(of.qf.has(x)) p+=3; });
+    me.sf.forEach(function(x){ if(of.sf.has(x)) p+=5; });
+    me.fin.forEach(function(x){ if(of.fin.has(x)) p+=7; });
+    if(me.champ && me.champ===of.champ) p+=12;
+    return p;
+  }
+  function officialEntered(){ var o=safeB(official); return o.g1.some(Boolean) || Object.keys(o.win.r32).length>0; }
+  function progress(t){
+    t = safeB(t);
+    var d = t.g1.filter(Boolean).length + t.g2.filter(Boolean).length + t.third.filter(Boolean).length;
+    d += Object.keys(t.win.r32).length + Object.keys(t.win.r16).length + Object.keys(t.win.qf).length + Object.keys(t.win.sf).length + Object.keys(t.win.final).length;
+    return {d:d, total:63};
+  }
+
+  // ---------- STORAGE (guarded, with timeout — never hangs) ----------
+  function withTimeout(p, ms){ return Promise.race([p, new Promise(function(_,rej){ setTimeout(function(){ rej(new Error("timeout")); }, ms); })]); }
+  function loadAll(){
+    var done=false;
+    var safety = setTimeout(function(){ if(!done){ done=true; render(); } }, 6000);
+    (async function(){
+      if(hasStorage){
+        try{
+          var idx = await withTimeout(window.storage.list("wc26final:", true), 4000);
+          if(idx && idx.keys){
+            for(var i=0;i<idx.keys.length;i++){
+              try{ var r = await withTimeout(window.storage.get(idx.keys[i], true), 4000); if(r && r.value){ var pe=JSON.parse(r.value); if(pe && typeof pe==="object") entries.push(pe); } }catch(e){}
+            }
+          }
+        }catch(e){ storageOK=false; }
+        try{ var ro = await withTimeout(window.storage.get("wc26final_official", true), 4000); if(ro && ro.value) official = Object.assign(blankBracket(), JSON.parse(ro.value)); }catch(e){}
+      } else {
+        storageOK=false;
+      }
+      try{ loadLocal(); }catch(e){}
+      try{ await loadPoolFile(); }catch(e){}
+      if(!done){ done=true; clearTimeout(safety); render(); }
+    })();
+  }
+  async function saveEntry(){
+    var e = {id:draft.id||uid(), name:draft.name.trim(), g1:draft.g1, g2:draft.g2, third:draft.third, win:draft.win, ts:Date.now(), locked:true};
+    draft.id=e.id; draft.locked=true;
+    var i = entries.findIndex(function(x){ return x.id===e.id; });
+    if(i>=0) entries[i]=e; else entries.push(e);
+    lsSet("wc26_draft", draft); // locked state survives a reload on the website
+    saveLocal();
+    if(!hasStorage) return false;
+    try{ await withTimeout(window.storage.set("wc26final:"+e.id, JSON.stringify(e), true), 2500); return true; }
+    catch(err){ return false; }
+  }
+  async function saveOfficial(){
+    saveLocal();
+    if(!hasStorage) return;
+    try{ await withTimeout(window.storage.set("wc26final_official", JSON.stringify(official), true), 2500); }catch(e){}
+  }
+
+  // ---------- LOCAL PERSISTENCE (real browsers, e.g. the GitHub Pages site) ----------
+  // Wrapped in try/catch everywhere: in sandboxed previews localStorage may be
+  // unavailable — the app simply runs without it, exactly as before.
+  function lsGet(k){ try{ var v=window.localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } }
+  function lsSet(k,v){ try{ window.localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function lsDel(k){ try{ window.localStorage.removeItem(k); }catch(e){} }
+  function saveLocal(){
+    lsSet("wc26_entries", entries.filter(function(e){ return e && !e.fromSite; }));
+    lsSet("wc26_official", official);
+  }
+  function saveDraftLocal(){ if(!draft.locked) lsSet("wc26_draft", draft); }
+  function entryKey(e){ var s=safeB(e); return ((s.name||"").trim().toLowerCase())+"|"+encBody(s); }
+  function mergeEntries(list, fromSite){
+    var seen={}; entries.forEach(function(e){ seen[entryKey(e)]=1; });
+    (list||[]).forEach(function(e){
+      if(!e || typeof e!=="object") return;
+      var k=entryKey(e); if(seen[k]) return; seen[k]=1;
+      if(fromSite) e.fromSite=true;
+      entries.push(e);
+    });
+  }
+  function loadLocal(){
+    mergeEntries(lsGet("wc26_entries"), false);
+    var lo=lsGet("wc26_official");
+    if(lo && !officialEntered()) official = Object.assign(blankBracket(), lo);
+    var ld=lsGet("wc26_draft");
+    if(ld && !draft.locked && progress(draft).d===0 && (ld.name || ld.locked || progress(ld).d>0)){
+      draft = Object.assign(makeDraft(), ld);
+    }
+  }
+
+  // ---------- POOL FILE (shared pool published on the website) ----------
+  // If a pool.txt sits next to this page on the web host, it is the pool everyone
+  // sees: one bracket code per line, plus one RESULTS line for official outcomes.
+  // Lines starting with # are comments. Only the repo owner can change it.
+  var siteOfficial = null, poolFileLoaded = false;
+  function loadPoolFile(){
+    if(typeof window.fetch !== "function") return Promise.resolve();
+    return window.fetch("pool.txt", {cache:"no-store"}).then(function(r){
+      if(!r || !r.ok) return null; return r.text();
+    }).then(function(txt){
+      if(!txt) return;
+      var fromFile=[], res=null;
+      txt.split(/\r?\n/).forEach(function(line){
+        line=line.trim();
+        if(!line || line.charAt(0)==="#") return;
+        var r=readCode(line); if(r.err) return;
+        if((r.name||"").toUpperCase()==="RESULTS"){ res=r.bracket; return; }
+        var b=r.bracket;
+        fromFile.push({id:"site_"+entryKey({name:r.name,g1:b.g1,g2:b.g2,third:b.third,win:b.win}), name:r.name, g1:b.g1, g2:b.g2, third:b.third, win:b.win, ts:0, locked:true, imported:true});
+      });
+      mergeEntries(fromFile, true);
+      if(res) siteOfficial = res;
+      // Published results are canonical for visitors; a local copy (the organizer's,
+      // or someone tinkering with their own view) only overrides on this device.
+      if(siteOfficial && !officialEntered()) official = Object.assign(blankBracket(), siteOfficial);
+      poolFileLoaded = true;
+    }).catch(function(){});
+  }
+
+  // Full render — used only for genuine view changes (tab switch, step change, submit).
+  // Individual picks never call this; they use refreshStep() so the page doesn't rebuild/scroll.
+  function render(){
+    var nav = document.getElementById("nav").children;
+    for(var i=0;i<nav.length;i++) nav[i].className = (nav[i].getAttribute("data-tab")===tab ? "on" : "");
+    var v = document.getElementById("view");
+    if(tab==="bracket") v.innerHTML = buildView("d");
+    else if(tab==="results") v.innerHTML = buildView("o");
+    else if(tab==="board") v.innerHTML = boardView();
+    else if(tab==="share") v.innerHTML = shareView();
+    else v.innerHTML = scoringView();
+    wire();
+    window.scrollTo(0,0);
+  }
+
+  var SUB = [{k:"groups",label:"Groups"},{k:"thirds",label:"3rd Place"},{k:"ko",label:"Knockout"}];
+
+  function buildView(scope){
+    var t = scope==="d" ? draft : official;
+    var locked = scope==="d" && draft.locked;
+    var step = scope==="d" ? mstep : ostep;
+    var h = "";
+
+    if(scope==="d" && locked){
+      h += '<div class="lockcard"><span class="bi">🔒</span><div class="t"><b>'+(justSubmitted?"Submitted &amp; locked!":"Your bracket is locked")+'</b><span>Now send it to the organizer — go to the <b>Share</b> tab to get your code.</span></div><button class="btn ghost" id="goshare" style="white-space:nowrap;padding:9px 12px;min-height:0;">Share →</button></div>';
+    }
+    if(scope==="d" && !locked){
+      h += '<div class="namebox"><input type="text" id="dname" placeholder="Enter your name" value="'+esc(draft.name)+'" autocomplete="off" autocapitalize="words"></div>';
+      var pr = progress(t), pct = Math.round(pr.d/pr.total*100);
+      h += '<div class="pwrap"><div class="phead"><span class="muted">Bracket progress</span><span id="pcount" style="font-weight:700;font-size:.85rem;">'+pr.d+' / '+pr.total+'</span></div><div class="ptrack"><div class="pfill" id="pfill" style="width:'+pct+'%"></div></div></div>';
+    } else if(scope==="d" && locked){
+      h += '<div class="banner ok"><span class="bi">👤</span><div><b>'+esc(draft.name||"—")+'</b></div></div>';
+    } else {
+      h += '<div class="banner info"><span class="bi">🎯</span><div>Organizer only — set actual results here as games finish. Everyone\'s points update automatically. This tab stays editable all tournament.</div></div>';
+    }
+
+    // step pills
+    h += '<div class="steps" id="steppills">';
+    SUB.forEach(function(s,i){
+      var done=false;
+      if(s.k==="groups") done = t.g1.filter(Boolean).length===12 && t.g2.filter(Boolean).length===12;
+      else if(s.k==="thirds") done = (t.third||[]).filter(Boolean).length===8;
+      else done = Object.keys(t.win.final).length===1;
+      h += '<button data-step="'+scope+':'+i+'" class="'+(i===step?"on":"")+' '+(done?"done":"")+'">'+(done?'<span class="chk">✓</span> ':'')+s.label+'</button>';
+    });
+    h += '</div>';
+
+    var sk = SUB[step].k;
+    h += '<div id="stepbody">';
+    if(sk==="groups") h += groupsStep(t, scope, locked);
+    else if(sk==="thirds") h += thirdsStep(t, scope, locked);
+    else h += koStep(t, scope, locked);
+    h += '</div>';
+
+    // nav buttons
+    h += '<div class="navbtns">';
+    if(step>0) h += '<button class="btn" data-nav="'+scope+':'+(step-1)+'">← Back</button>';
+    if(step<2) h += '<button class="btn primary" data-nav="'+scope+':'+(step+1)+'" style="margin-left:auto;">Next →</button>';
+    else if(scope==="d" && !locked) h += '<button class="btn go" id="submit">🔒 Submit &amp; Lock</button>';
+    h += '</div>';
+    return h;
+  }
+
+  function groupsStep(t, scope, locked){
+    var h = '<p class="hint">'+(locked?'Your picks: ':'Tap who finishes ')+'<b style="color:var(--gold-d);">1st</b> <span class="tiny">(3 pts)</span> '+(locked?'&amp;':'and')+' <b style="color:var(--info);">2nd</b> <span class="tiny">(2 pts)</span>'+(locked?'.':' in each group. Tap again to clear.')+'</p>';
+    h += '<div class="ggrid">';
+    GK.forEach(function(g, gi){
+      h += '<div class="gcard"><div class="glabel">GROUP '+g+'</div><div class="teamcol">';
+      GROUPS[g].forEach(function(team){
+        var cls=""; if(t.g1[gi]===team) cls="s1"; else if(t.g2[gi]===team) cls="s2";
+        if(locked && !cls) return;
+        var tag = t.g1[gi]===team ? '<span class="tag">1ST</span>' : (t.g2[gi]===team ? '<span class="tag">2ND</span>' : '');
+        var attr = locked ? '' : 'data-grp="'+scope+':'+gi+'" data-team="'+esc(team)+'"';
+        h += '<div class="chip '+cls+(locked?' lock':'')+'" '+attr+'>'+flag(team)+'<span class="nm">'+esc(team)+'</span>'+tag+'</div>';
+      });
+      h += '</div></div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
+  function thirdsStep(t, scope, locked){
+    var adv = {}; t.g1.forEach(function(x){ if(x) adv[x]=1; }); t.g2.forEach(function(x){ if(x) adv[x]=1; });
+    var chosen = {}; (t.third||[]).filter(Boolean).forEach(function(x){ chosen[x]=1; });
+    var cCount = Object.keys(chosen).length;
+    var need = 8 - cCount;
+    var placed = thirdsPlaced(t);
+
+    var h = '<p class="hint">'+(locked?'Your 8 third-place qualifiers ':'8 best third-place teams also reach the Round of 32. Pick the 8 you think advance. ')+'<span class="tiny">(1 pt each)</span></p>';
+    if(locked){
+      h += '<div class="pillrow">';
+      (t.third||[]).filter(Boolean).forEach(function(team){ h += '<span class="pill sel lock">'+flag(team)+esc(team)+' <b style="opacity:.75;font-size:.7rem;">'+TEAM2G[team]+'</b></span>'; });
+      h += '</div>';
+      return h;
+    }
+    h += '<p class="hint" style="color:'+(need>0?'var(--ink2)':'var(--ok)')+';font-weight:600;margin-top:-6px;">'+(need>0?need+' more to pick':'✓ All 8 chosen')+'</p>';
+    if(cCount===8 && placed<8){
+      h += '<div class="banner warn"><span class="bi">⚠️</span><div>This mix of groups can\'t fill all 8 bracket slots under the real rules. Swap one team from an over-picked group.</div></div>';
+    }
+    h += '<div class="ggrid">';
+    GK.forEach(function(g){
+      h += '<div class="gcard"><div class="glabel">GROUP '+g+'</div><div class="pillrow">';
+      GROUPS[g].forEach(function(team){
+        var isAdv = !!adv[team], isCh = !!chosen[team];
+        var groupTaken = (t.third||[]).some(function(x){ return TEAM2G[x]===TEAM2G[team]; });
+        var dim = isAdv || (!isCh && cCount>=8 && !groupTaken);
+        h += '<span class="pill '+(isCh?'sel':'')+' '+(dim&&!isCh?'dim':'')+'" '+(isAdv?'':'data-third="'+scope+'" data-team="'+esc(team)+'"')+'>'+flag(team)+'<span class="'+(isAdv?'':'')+'" style="'+(isAdv?'text-decoration:line-through;opacity:.6;':'')+'">'+esc(team)+'</span></span>';
+      });
+      h += '</div></div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
+  function koStep(t, scope, locked){
+    cleanup(t);
+    var tm = thirdsMap(t);
+    var gDone = t.g1.filter(Boolean).length===12 && t.g2.filter(Boolean).length===12;
+    var tDone = (t.third||[]).filter(Boolean).length===8 && Object.keys(tm).length===8;
+    var h = "";
+    if(!locked){
+      if(!gDone || !tDone){
+        h += '<div class="banner warn"><span class="bi">⚠️</span><div>Finish the <b>Groups</b> and <b>3rd Place</b> steps first — each matchup fills in here automatically as you complete them.</div></div>';
+      } else {
+        h += '<p class="hint">Your matchups are set from your group picks. Tap the winner of each game — they advance automatically. Change a pick and later rounds update.</p>';
+      }
+    }
+    KO.forEach(function(rd){
+      var ms = matchesFor(rd.key, t, tm);
+      var ptsTxt = rd.key==="final" ? '<span class="badge gold">Champion = 12 pts</span>'
+        : '<span class="badge info">'+({r32:2,r16:3,qf:5,sf:7})[rd.key]+' pts each</span>';
+      h += '<div class="round"><div class="rhead"><h3>'+rd.label+'</h3>'+ptsTxt+'</div><div class="mgrid">';
+      ms.forEach(function(m, mi){
+        var w = t.win[rd.key][mi]||"";
+        h += '<div class="match">'+koRow(scope,rd.key,mi,m.a,m.aL,w,locked)+koRow(scope,rd.key,mi,m.b,m.bL,w,locked)+'</div>';
+      });
+      h += '</div>';
+      if(rd.key==="final"){
+        var champ = t.win.final[0]||"";
+        h += '<div class="champ '+(champ?'set':'')+'"><div class="lbl">CHAMPION</div><div class="who">'+(champ?flag(champ)+esc(champ):'🏆 Pick the final winner')+'</div></div>';
+      }
+      h += '</div>';
+    });
+    return h;
+  }
+  function koRow(scope, rk, mi, team, label, winner, locked){
+    if(!team) return '<div class="mrow pend">'+(label?esc(label):"—")+'</div>';
+    var isWin = winner===team;
+    if(locked && winner && !isWin) return '<div class="mrow fade">'+flag(team)+'<span class="nm">'+esc(team)+'</span></div>';
+    var attr = locked ? '' : 'data-ko="'+scope+':'+rk+':'+mi+':'+esc(team)+'"';
+    return '<div class="mrow '+(isWin?'win':'')+(locked?' lock':'')+'" '+attr+'>'+flag(team)+'<span class="nm">'+esc(team)+'</span>'+(isWin?'<span class="wtick">✓</span>':'')+'</div>';
+  }
+
+  function emptyCard(icon, title, sub){
+    return '<div class="empty"><span class="bi">'+icon+'</span><b>'+esc(title)+'</b><span class="muted">'+esc(sub)+'</span></div>';
+  }
+
+  // Builds the complete contents of pool.txt: every collected bracket as a code line,
+  // plus a RESULTS line carrying the official outcomes entered so far.
+  function buildPoolFile(){
+    var lines = ["# World Cup 2026 pool — one bracket code per line. Lines starting with # are ignored."];
+    entries.slice().sort(function(a,b){ return (a.name||"").localeCompare(b.name||""); }).forEach(function(e){
+      try{ var s=safeB(e); var nm=(s.name||"Unnamed"); if(nm.trim().toUpperCase()==="RESULTS") nm="Results (player)"; lines.push(makeCode(nm, s)); }catch(err){}
+    });
+    if(officialEntered()){
+      lines.push("# Official results (organizer only — replaces any earlier RESULTS line):");
+      try{ lines.push(makeCode("RESULTS", safeB(official))); }catch(err){}
+    }
+    return lines.join("\n");
+  }
+
+  // Read-only view of one entry's full bracket, shown when a leaderboard row is tapped.
+  // Reuses the locked renderers on a deep clone (koStep's cleanup mutates its input).
+  function bracketDetail(e){
+    var t;
+    try{ t = JSON.parse(JSON.stringify(safeB(e))); }catch(err){ return '<p class="tiny">Couldn\'t load this bracket.</p>'; }
+    var head = function(txt){ return '<p style="margin:14px 0 8px;font-weight:800;font-size:.85rem;color:var(--ink2);letter-spacing:.03em;">'+txt+'</p>'; };
+    var h = '<p class="tiny" style="margin:0;">'+esc(t.name||"Unnamed")+'\u2019s picks \u2014 tap the row again to close.</p>';
+    h += head("GROUPS (1st / 2nd)") + groupsStep(t, "x", true);
+    h += head("THIRD-PLACE QUALIFIERS") + thirdsStep(t, "x", true);
+    h += head("KNOCKOUT") + koStep(t, "x", true);
+    return h;
+  }
+
+  function boardView(){
+    if(!entries.length){
+      var msg = (!storageOK && !poolFileLoaded) ? "Couldn't reach shared storage, so saved entries can't show here. You can still fill out and lock a bracket." : "Be the first — fill out your bracket on the Fill Out tab.";
+      return emptyCard("👥","No entries yet", msg);
+    }
+    var scored = entries.map(function(e){ return {e:e, total:score(e)}; }).sort(function(a,b){ return b.total-a.total || ((a.e&&a.e.ts)||0)-((b.e&&b.e.ts)||0); });
+    var max = scored.length ? scored[0].total : 0;
+    var h = "";
+    if(officialEntered() && safeB(official).win.final[0]){
+      var tie = scored.filter(function(s){ return s.total===max && max>0; });
+      h += '<div class="winner-banner"><span class="bi">👑</span><div class="t"><b>'+tie.map(function(s){ return esc((s.e&&s.e.name)||"—"); }).join(", ")+'</b><span>POOL '+(tie.length>1?"LEADERS":"WINNER")+' · '+max+' PTS</span></div></div>';
+    }
+    h += '<p class="muted" style="margin:0 0 10px;">'+entries.length+' '+(entries.length===1?"entry":"entries")+((storageOK||poolFileLoaded)?'':' · ⚠️ storage offline')+'</p>';
+    scored.forEach(function(s, i){
+      var pct = max>0 ? Math.round(s.total/max*100) : 0;
+      var rc = i===0?"g":i===1?"s":i===2?"b":"";
+      var cp = (s.e.win && s.e.win.final) ? s.e.win.final[0] : "";
+      var eid = "exp_"+i;
+      h += '<div class="lbrow" data-exp="'+eid+'" data-ei="'+entries.indexOf(s.e)+'" style="cursor:pointer;">'
+        +'<div class="lbtop"><div class="rank '+rc+'">'+(i+1)+'</div>'
+        +'<div class="lbname">'+esc(s.e.name||"Unnamed")+(cp?'<span class="cp">'+flag(cp)+esc(cp)+'</span>':'')+'</div>'
+        +'<div class="lbpts">'+s.total+'<span> pts</span></div>'
+        +'<span class="lbchev" style="color:var(--ink3);font-size:.85rem;margin-left:2px;">▸</span></div>'
+        +'<div class="lbtrack"><div class="lbfill" style="width:'+pct+'%"></div></div>'
+        +'<div id="'+eid+'" class="lbdetail" style="display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px;"></div>'
+        +'</div>';
+    });
+    if(!officialEntered()) h += '<p class="tiny" style="text-align:center;margin-top:14px;">No results entered yet — everyone\'s at zero. The organizer fills in outcomes on the Results tab.</p>';
+    return h;
+  }
+
+  function scoringView(){
+    var rows = [
+      ["Group winner (×12)","3","36"],
+      ["Group runner-up (×12)","2","24"],
+      ["3rd-place qualifier (×8)","1","8"],
+      ["Reach Round of 16 (×16)","2","32"],
+      ["Reach quarter-finals (×8)","3","24"],
+      ["Reach semi-finals (×4)","5","20"],
+      ["Reach final (×2)","7","14"],
+      ["Champion","12","12"]
+    ];
+    var body = rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td class="r">'+r[1]+'</td><td class="r" style="color:var(--ink2);">'+r[2]+'</td></tr>'; }).join("");
+    var warn = (storageOK||poolFileLoaded) ? "" : '<div class="banner warn"><span class="bi">☁️</span><div>Shared leaderboard storage is offline in this view. Your locked bracket is saved on this device, but it may not sync to a shared leaderboard. If you need shared scoring, reopen inside the Claude app.</div></div>';
+    return warn +
+      '<p class="muted" style="margin:0 0 14px;">Predict each group\'s top two and the best third-place teams, then build the knockout bracket by picking winners. You earn points for correct group finishes and for every round each team actually reaches.</p>'+
+      '<div class="gcard"><table class="scoretable"><thead><tr><th>Achievement</th><th class="r">Each</th><th class="r">Max</th></tr></thead><tbody>'+body+'<tr><td>Perfect bracket</td><td class="r"></td><td class="r">170 pts</td></tr></tbody></table></div>'+
+      '<p class="tiny" style="margin-top:14px;">The Round of 32 matchups and the full path (R16 → quarters → semis → final) follow the official FIFA bracket exactly. Scoring is based on how far each team gets, so the specific third-place slotting never affects your points. Final: July 19, 2026 at MetLife Stadium. · App version 4.</p>';
+  }
+
+  function shareView(){
+    var h = "";
+    var locked = draft.locked;
+    var code = locked ? makeCode(draft.name, draft) : "";
+
+    // --- Player side: export your locked bracket ---
+    h += '<div class="banner info"><span class="bi">📤</span><div><b>Players:</b> after you lock your bracket, send your code or file to the organizer so it counts.</div></div>';
+
+    if(!locked){
+      h += '<div class="empty"><span class="bi">🔒</span><b>Lock your bracket first</b><span class="muted">Fill it out on the Fill Out tab and tap Submit &amp; Lock. Your shareable code appears here once it\'s locked.</span></div>';
+    } else {
+      h += '<div class="gcard" style="margin-bottom:14px;"><div style="font-weight:800;margin-bottom:4px;">Your bracket code</div>';
+      h += '<p class="tiny" style="margin:0 0 9px;">'+esc(draft.name||"(no name)")+' · send this to the organizer</p>';
+      h += '<textarea id="codeout" readonly style="width:100%;height:78px;font-family:ui-monospace,Menlo,monospace;font-size:.8rem;padding:11px;border:1.5px solid var(--line2);border-radius:11px;background:var(--bg);color:var(--ink);resize:none;-webkit-user-select:all;user-select:all;">'+esc(code)+'</textarea>';
+      h += '<div class="orgtools"><button class="btn primary" id="copycode" style="flex:1;justify-content:center;">📋 Copy code</button><button class="btn" id="filecode" style="flex:1;justify-content:center;">💾 Save as file</button></div>';
+      h += '<p class="tiny" style="margin-top:9px;">Tip: copy the code and paste it into a text/WhatsApp to the organizer, or save the file and attach it.</p></div>';
+      h += '<button class="btn ghost" id="newentry" style="width:100%;justify-content:center;">＋ Start a new blank bracket</button>';
+    }
+
+    // --- Organizer side: collect everyone's brackets ---
+    h += '<div style="height:18px;"></div>';
+    h += '<div class="banner ok"><span class="bi">📥</span><div><b>Organizer:</b> paste each person\'s code below (or upload their file) to add them to your leaderboard.</div></div>';
+    h += '<div class="gcard">';
+    h += '<div style="font-weight:800;margin-bottom:8px;">Add an entry</div>';
+    h += '<textarea id="codein" placeholder="Paste a WC26-… code here" style="width:100%;height:78px;font-family:ui-monospace,Menlo,monospace;font-size:.8rem;padding:11px;border:1.5px solid var(--line2);border-radius:11px;background:var(--card);color:var(--ink);resize:none;"></textarea>';
+    h += '<div class="orgtools"><button class="btn go" id="addcode">➕ Add to leaderboard</button><label class="btn" style="flex:1;justify-content:center;cursor:pointer;">📂 Upload file<input type="file" id="filein" accept=".txt,.wc26" style="display:none;"></label></div>';
+    h += '<div id="importmsg" style="margin-top:10px;"></div>';
+    h += '</div>';
+
+    // current collected list
+    if(entries.length){
+      h += '<p class="muted" style="margin:16px 0 8px;">Collected so far ('+entries.length+'):</p><div class="pillrow">';
+      entries.slice().sort(function(a,b){return (a.name||"").localeCompare(b.name||"");}).forEach(function(e){
+        h += '<span class="pill" style="cursor:default;">'+esc(e.name||"Unnamed")+(e.imported?' <span class="tiny">↓</span>':'')+'</span>';
+      });
+      h += '</div>';
+
+      // Publish to the website: one paste into pool.txt on GitHub and every visitor
+      // sees the full leaderboard with everyone's brackets.
+      h += '<div class="gcard" style="margin-top:16px;">';
+      h += '<div style="font-weight:800;margin-bottom:4px;">Publish pool to the website</div>';
+      h += '<p class="tiny" style="margin:0 0 9px;">Copy this, then on GitHub open (or create) a file named <b>pool.txt</b> next to index.html, select-all, paste, and Commit. The site updates for everyone within a minute or two.'+(officialEntered()?' Includes your current official results.':'')+'</p>';
+      h += '<textarea id="poolout" readonly style="width:100%;height:96px;font-family:ui-monospace,Menlo,monospace;font-size:.72rem;padding:11px;border:1.5px solid var(--line2);border-radius:11px;background:var(--bg);color:var(--ink);resize:none;">'+esc(buildPoolFile())+'</textarea>';
+      h += '<div class="orgtools"><button class="btn primary" id="copypool" style="flex:1;justify-content:center;">📋 Copy pool file</button></div>';
+      h += '</div>';
+    }
+    return h;
+  }
+
+
+  function targ(scope){ return scope==="d" ? draft : official; }
+  function persist(scope){ if(scope==="o") saveOfficial(); else saveDraftLocal(); }
+  function toast(msg){ var d=document.createElement("div"); d.className="toast"; d.textContent=msg; document.body.appendChild(d); setTimeout(function(){ d.style.opacity="0"; d.style.transition="opacity .4s"; setTimeout(function(){ d.remove(); }, 400); }, 2600); }
+  // In-page modal — Safari blocks native confirm()/alert() inside sandboxed iframes, so we never use them.
+  function confirmModal(opts, onYes){
+    var bg=document.createElement("div"); bg.className="modal-bg";
+    var yes=opts.yes||"Confirm", no=opts.no||"Cancel";
+    bg.innerHTML='<div class="modal"><h4>'+esc(opts.title||"Are you sure?")+'</h4><p>'+(opts.body||"")+'</p><div class="mbtns">'+(opts.hideCancel?'':'<button class="btn ghost" data-m="no">'+esc(no)+'</button>')+'<button class="btn '+(opts.danger?'go':'primary')+'" data-m="yes">'+esc(yes)+'</button></div></div>';
+    function close(){ if(bg.parentNode) bg.parentNode.removeChild(bg); }
+    bg.addEventListener("click", function(e){
+      var m = e.target.getAttribute && e.target.getAttribute("data-m");
+      if(e.target===bg){ close(); return; }
+      if(m==="no"){ close(); }
+      if(m==="yes"){ close(); if(onYes){ try{ onYes(); }catch(err){ toast("Something went wrong — please try again."); } } }
+    });
+    document.body.appendChild(bg);
+  }
+  function alertModal(title, body){ confirmModal({title:title, body:body||"", yes:"OK", hideCancel:true}); }
+  function showImport(html){ var el=document.getElementById("importmsg"); if(el) el.innerHTML=html; }
+  function doImport(raw){
+    raw=(raw||"").trim();
+    if(!raw){ showImport('<div class="banner warn"><span class="bi">⚠️</span><div>Paste a code first.</div></div>'); return; }
+    var r=importCode(raw);
+    if(r.err){ showImport('<div class="banner warn"><span class="bi">⚠️</span><div>'+esc(r.err)+'</div></div>'); return; }
+    if(r.results){ var ci0=document.getElementById("codein"); if(ci0) ci0.value=""; render(); setTimeout(function(){ showImport('<div class="banner ok"><span class="bi">✅</span><div>Official results imported — the leaderboard is now scored against them.</div></div>'); }, 30); toast("Results imported"); return; }
+    if(r.dupe){ showImport('<div class="banner info"><span class="bi">ℹ️</span><div><b>'+esc(r.name||"That entry")+'</b> is already in your leaderboard (identical bracket) — skipped.</div></div>'); return; }
+    var ci=document.getElementById("codein"); if(ci) ci.value="";
+    render();
+    setTimeout(function(){ showImport('<div class="banner ok"><span class="bi">✅</span><div>Added <b>'+esc(r.name||"entry")+'</b> to your leaderboard.</div></div>'); }, 30);
+    toast("Added "+(r.name||"entry"));
+  }
+
+  // ---------- WIRE EVENTS ----------
+  function wire(){
+    var nameEl = document.getElementById("dname");
+    if(nameEl) nameEl.addEventListener("input", function(){ draft.name = nameEl.value; saveDraftLocal(); });
+
+    // Leaderboard: tap a row to expand that person's full bracket (built lazily, no page rebuild)
+    each("[data-exp]", function(row){ row.addEventListener("click", function(ev){
+      if(ev.target && ev.target.closest && ev.target.closest(".lbdetail")) return; // taps inside the detail don't toggle
+      var det = document.getElementById(row.getAttribute("data-exp"));
+      if(!det) return;
+      var chev = row.querySelector(".lbchev");
+      if(det.style.display==="none"){
+        if(!det.innerHTML){
+          var e = entries[+row.getAttribute("data-ei")];
+          det.innerHTML = e ? bracketDetail(e) : "";
+        }
+        det.style.display="block"; if(chev) chev.textContent="▾";
+      } else {
+        det.style.display="none"; if(chev) chev.textContent="▸";
+      }
+    }); });
+
+    var ne = document.getElementById("newentry");
+    if(ne) ne.addEventListener("click", function(){
+      confirmModal({title:"Start a new bracket?", body:"This opens a fresh blank bracket. Your locked entry stays saved and on the leaderboard.", yes:"New bracket", no:"Cancel"}, function(){
+        lsDel("wc26_draft"); draft = makeDraft(); mstep=0; justSubmitted=false; tab="bracket"; render();
+      });
+    });
+
+    var gs = document.getElementById("goshare");
+    if(gs) gs.addEventListener("click", function(){ tab="share"; render(); });
+
+    var cc = document.getElementById("copycode");
+    if(cc) cc.addEventListener("click", function(){
+      var ta = document.getElementById("codeout");
+      var txt = ta ? ta.value : "";
+      function ok(){ toast("Code copied — paste it to the organizer."); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(ok, function(){ if(ta){ ta.focus(); ta.select(); document.execCommand && document.execCommand("copy"); ok(); } });
+      } else if(ta){ ta.focus(); ta.select(); try{ document.execCommand("copy"); ok(); }catch(e){ toast("Select the code and copy it manually."); } }
+    });
+
+    var cp = document.getElementById("copypool");
+    if(cp) cp.addEventListener("click", function(){
+      var ta = document.getElementById("poolout");
+      var txt = ta ? ta.value : "";
+      function ok(){ toast("Pool file copied — paste into pool.txt on GitHub and Commit."); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(ok, function(){ if(ta){ ta.focus(); ta.select(); document.execCommand && document.execCommand("copy"); ok(); } });
+      } else if(ta){ ta.focus(); ta.select(); try{ document.execCommand("copy"); ok(); }catch(e){ toast("Select the text and copy it manually."); } }
+    });
+
+    var fc = document.getElementById("filecode");
+    if(fc) fc.addEventListener("click", function(){
+      var code = makeCode(draft.name, draft);
+      var safe = (draft.name||"bracket").replace(/[^a-z0-9]+/gi,"_").slice(0,24);
+      var blob = new Blob([code], {type:"text/plain"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a"); a.href=url; a.download="WC26_"+safe+".txt";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+      toast("File saved — send it to the organizer.");
+    });
+
+    var addc = document.getElementById("addcode");
+    if(addc) addc.addEventListener("click", function(){
+      var ta = document.getElementById("codein");
+      doImport(ta ? ta.value : "");
+    });
+
+    var fin = document.getElementById("filein");
+    if(fin) fin.addEventListener("change", function(){
+      var f = fin.files && fin.files[0]; if(!f) return;
+      var rd = new FileReader();
+      rd.onload = function(){ doImport(String(rd.result||"")); };
+      rd.onerror = function(){ showImport('<div class="banner warn"><span class="bi">⚠️</span><div>Couldn\'t read that file.</div></div>'); };
+      rd.readAsText(f);
+    });
+
+    each("[data-step]", function(b){ b.addEventListener("click", function(){ var a=b.getAttribute("data-step").split(":"); if(a[0]==="d") mstep=+a[1]; else ostep=+a[1]; render(); }); });
+    each("[data-nav]", function(b){ b.addEventListener("click", function(){ var a=b.getAttribute("data-nav").split(":"); if(a[0]==="d") mstep=+a[1]; else ostep=+a[1]; render(); }); });
+
+    wireStep();
+
+    var sub = document.getElementById("submit");
+    if(sub) sub.addEventListener("click", function(){
+      if(!draft.name.trim()){ alertModal("Add your name", "Please enter your name at the top of this tab before locking your bracket."); mstep=0; render(); return; }
+      var pr = progress(draft);
+      confirmModal({
+        title:"Submit and lock?",
+        body:(pr.d<pr.total ? "You've made <b>"+pr.d+" of "+pr.total+"</b> picks. " : "")+"Once locked, your bracket <b>cannot be changed</b>.",
+        yes:"Lock it in", no:"Keep editing", danger:true
+      }, function(){
+        sub.disabled=true; sub.textContent="Locking…";
+        // The bracket code is generated locally from the picks — it does NOT depend on
+        // storage. So whatever happens with the shared save, ALWAYS land on Share
+        // so the person gets their code.
+        function finish(savedOk){
+          justSubmitted=true; tab="share"; render();
+          if(!savedOk && hasStorage) toast("Shared save didn't go through — your code below still works. Send it to the organizer.");
+        }
+        saveEntry().then(finish, function(){ finish(false); });
+      });
+    });
+  }
+
+  function each(sel, fn){ var els=document.querySelectorAll(sel); for(var i=0;i<els.length;i++) fn(els[i]); }
+
+  // Handlers for the picks inside #stepbody. Re-attached after each in-place step refresh.
+  // These update only the step body + progress chrome, so the page never scrolls or rebuilds.
+  function wireStep(){
+    each("[data-grp]", function(c){ c.addEventListener("click", function(){
+      var a=c.getAttribute("data-grp").split(":"), scope=a[0], gi=+a[1], team=c.getAttribute("data-team"), t=targ(scope);
+      if(scope==="d" && draft.locked) return;
+      if(t.g1[gi]===team) t.g1[gi]="";
+      else if(t.g2[gi]===team) t.g2[gi]="";
+      else if(!t.g1[gi]) t.g1[gi]=team;
+      else if(!t.g2[gi]) t.g2[gi]=team;
+      else t.g2[gi]=team;
+      if(t.g1[gi] && t.g1[gi]===t.g2[gi]) t.g2[gi]="";
+      if(t.third){ var k=t.third.indexOf(team); if(k>=0) t.third.splice(k,1); }
+      cleanup(t); persist(scope); refreshStep(scope);
+    }); });
+
+    each("[data-third]", function(c){ c.addEventListener("click", function(){
+      var scope=c.getAttribute("data-third"), team=c.getAttribute("data-team"), t=targ(scope);
+      if(scope==="d" && draft.locked) return;
+      if(t.g1.indexOf(team)>=0 || t.g2.indexOf(team)>=0) return;
+      if(!t.third) t.third=[];
+      var i=t.third.indexOf(team);
+      if(i>=0) t.third.splice(i,1);
+      else {
+        // Only one team per group can finish 3rd in reality — picking a second
+        // team from the same group replaces the first (protects organizer results too).
+        var grp = TEAM2G[team];
+        for(var j=t.third.length-1;j>=0;j--){ if(TEAM2G[t.third[j]]===grp) t.third.splice(j,1); }
+        if(t.third.filter(Boolean).length>=8) return;
+        t.third.push(team);
+      }
+      cleanup(t); persist(scope); refreshStep(scope);
+    }); });
+
+    each("[data-ko]", function(r){ r.addEventListener("click", function(){
+      var parts=r.getAttribute("data-ko").split(":"), scope=parts[0], rk=parts[1], mi=+parts[2], team=parts.slice(3).join(":"), t=targ(scope);
+      if(scope==="d" && draft.locked) return;
+      t.win[rk][mi] = (t.win[rk][mi]===team) ? "" : team;
+      cleanup(t); persist(scope); refreshStep(scope);
+    }); });
+  }
+  // Update progress count + bar and step-pill checkmarks WITHOUT a full re-render
+  // (so the page never rebuilds or scrolls on a pick).
+  function refreshChrome(t){
+    var pr = progress(t);
+    var pc = document.getElementById("pcount"); if(pc) pc.textContent = pr.d + " / " + pr.total;
+    var pf = document.getElementById("pfill"); if(pf) pf.style.width = Math.round(pr.d/pr.total*100) + "%";
+    var pills = document.getElementById("steppills");
+    if(pills){
+      var btns = pills.getElementsByTagName("button");
+      for(var i=0;i<btns.length && i<SUB.length;i++){
+        var k = SUB[i].k, done=false;
+        if(k==="groups") done = t.g1.filter(Boolean).length===12 && t.g2.filter(Boolean).length===12;
+        else if(k==="thirds") done = (t.third||[]).filter(Boolean).length===8;
+        else done = Object.keys(t.win.final).length===1;
+        var isOn = btns[i].className.indexOf("on")>=0;
+        btns[i].className = (isOn?"on ":"") + (done?"done":"");
+        var lab = SUB[i].label;
+        btns[i].innerHTML = (done?'<span class="chk">✓</span> ':'') + lab;
+      }
+    }
+  }
+  // Re-render ONLY the current step body (used by knockout, where a pick changes matchups).
+  function refreshStep(scope){
+    var t = targ(scope);
+    var locked = scope==="d" && draft.locked;
+    var step = scope==="d" ? mstep : ostep;
+    var sk = SUB[step].k;
+    var sb = document.getElementById("stepbody");
+    if(!sb) return;
+    if(sk==="groups") sb.innerHTML = groupsStep(t, scope, locked);
+    else if(sk==="thirds") sb.innerHTML = thirdsStep(t, scope, locked);
+    else sb.innerHTML = koStep(t, scope, locked);
+    wireStep();      // re-attach handlers for just the step body
+    refreshChrome(t);
+  }
+
+
+
+  // nav tabs
+  each("#nav button", function(b){ b.addEventListener("click", function(){ tab=b.getAttribute("data-tab"); render(); }); });
+
+  // initial paint immediately (never blocks on storage), then load data in background
+  render();
+  loadAll();
+})();
+</script>
+</body>
+</html>
