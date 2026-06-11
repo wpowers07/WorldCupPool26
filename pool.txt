@@ -1,3 +1,1 @@
-# World Cup 2026 pool — one bracket code per line. Lines starting with # are ignored.
-WC26-03JoeAHIMQUYcgkosDEJPSVZfjmrtNTWCFhuaDUQgtcMYIjAskPHoUgcYIskogcsocsc-jx1n
-WC26-07Jacob HAHIMQUYcgkosCEJNSWbfjlrtDLPTVuemCJQgrcMYIjAskNHoJgcYIskogcIococ-6zav
+h# World Cup 2026 pool — one bracket code per line. Lines starting with # are ignored.
